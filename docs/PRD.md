@@ -71,9 +71,9 @@ GET /api/chart/data/:date
 - Response: Array of song objects with order, title, artist
 
 GET /api/chart/yearly-top/:year
-- Purpose: Get yearly top songs ranking
+- Purpose: Get yearly top songs ranking with calculation metrics
 - Parameters: year (number)
-- Response: Array of top 50 songs with order, title, artist
+- Response: Array of top 50 songs with order, title, artist, totalPoints, highestPosition, appearances
 ```
 
 #### **Data Models**
@@ -104,6 +104,16 @@ GET /api/chart/yearly-top/:year
   year: 2024,
   title: "Top Songs of 2024",
   songs: [Song Object Array]
+}
+
+// Enhanced Song Object (with calculation properties)
+{
+  order: 1,
+  title: "Luther",
+  artist: "Kendrick Lamar",
+  totalPoints: 245,
+  highestPosition: 1,
+  appearances: 8
 }
 ```
 
@@ -143,6 +153,7 @@ App
 ├── DateList (Weekly mode)
 ├── ChartTable
 ├── YearlyTopSongs
+├── JsonViewer
 ├── DownloadButton
 └── YearlyDownloadButton
 ```
@@ -156,7 +167,15 @@ App
   viewMode: 'weekly' | 'yearly',
   dates: DateObject[],
   chartData: SongObject[],
-  yearlySongs: SongObject[]
+  yearlySongs: SongObject[],
+  selectedProperties: {
+    position: boolean,
+    title: boolean,
+    artist: boolean,
+    totalPoints: boolean,
+    highestPosition: boolean,
+    appearances: boolean
+  }
 }
 
 // Loading States
@@ -176,10 +195,12 @@ App
 
 #### **User Interface Requirements**
 - **Responsive Design**: Mobile-first approach
-- **Loading States**: Visual feedback during data fetching
-- **Error Handling**: User-friendly error messages
+- **Loading States**: Visual feedback during data fetching with progress indicators
+- **Error Handling**: User-friendly error messages with retry options
 - **Accessibility**: WCAG 2.1 compliance
 - **Cross-browser Compatibility**: Modern browser support
+- **JSON Data Inspection**: Interactive JSON viewer with property selection
+- **Enhanced Loading Messages**: Informative loading states for long-running operations
 
 ---
 
@@ -286,10 +307,11 @@ class ChartAPIService {
 ## 📊 **Success Metrics**
 
 ### **Technical Metrics**
-- **API Response Time**: < 2 seconds for chart data
+- **API Response Time**: < 2 seconds for chart data, < 5 minutes for yearly calculations
 - **Scraping Success Rate**: > 95% successful data extraction
 - **Error Rate**: < 5% failed requests
 - **Uptime**: > 99% availability
+- **Timeout Handling**: Graceful handling of long-running operations
 
 ### **User Experience Metrics**
 - **Page Load Time**: < 3 seconds
@@ -322,6 +344,8 @@ class ChartAPIService {
 - **Artist Analytics**: Artist-specific statistics and rankings
 - **Genre Analysis**: Genre-based filtering and analysis
 - **Advanced Filtering**: Date range, artist, song title filters
+- **Enhanced JSON Export**: Customizable data formats and property selection
+- **Real-time Progress Tracking**: Visual progress indicators for long operations
 
 ### **Phase 3 Features**
 - **User Accounts**: Save favorite charts and analyses
@@ -364,9 +388,10 @@ class ChartAPIService {
 ## 🎯 **Current Implementation Details**
 
 ### **Tech Stack**
-- **Backend**: Node.js, Express.js, Cheerio, Axios
-- **Frontend**: React 18, Custom Hooks, CSS3
+- **Backend**: Node.js, Express.js, Cheerio, Axios (with optimized timeouts)
+- **Frontend**: React 18, Custom Hooks, CSS3, Enhanced JSON Viewer
 - **Development**: npm, nodemon
+- **Performance**: Extended timeouts, request delays, progress logging
 
 ### **Project Structure**
 ```
@@ -395,6 +420,35 @@ m/
 - `start.sh` - Startup script for both services
 - `README.md` - Setup and usage instructions
 - `PRD.md` - This product requirements document
+- `docs/songList.json` - Reference JSON format for data exports
+- `docs/herse-songList-export.json` - Example data export format
+
+---
+
+## 🚀 **Recent Enhancements (Latest Update)**
+
+### **Enhanced Data Export System**
+- **JsonViewer Component**: Interactive JSON data inspection with property selection
+- **Customizable Exports**: Choose which properties to include in JSON output
+- **Copy/Download Functionality**: One-click copy to clipboard and direct download
+- **Format Consistency**: Matches reference format from `docs/songList.json`
+
+### **Performance Optimizations**
+- **Extended Timeouts**: 5-minute frontend timeout for yearly calculations
+- **Request Delays**: 100ms delays between scraping requests
+- **Progress Logging**: Real-time progress updates during long operations
+- **Error Recovery**: Graceful handling of failed requests with continuation
+
+### **Enhanced User Experience**
+- **Property Selection**: Checkboxes to customize JSON output properties
+- **Loading Indicators**: Informative loading messages for long-running operations
+- **Enhanced Error Handling**: Better error messages and recovery options
+- **Responsive Design**: Improved mobile and desktop experience
+
+### **Data Format Standards**
+- **Consistent JSON Structure**: Standardized format matching industry standards
+- **Calculation Properties**: Full visibility into ranking algorithm metrics
+- **Flexible Export Options**: Multiple export formats for different use cases
 
 ---
 
