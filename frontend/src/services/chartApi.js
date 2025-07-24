@@ -12,9 +12,9 @@ const api = axios.create({
 });
 
 // Get available dates for a specific year
-export const getChartDates = async (year) => {
+export const getChartDates = async (year, source) => {
   try {
-    const response = await api.get(`/chart/dates/${year}`);
+    const response = await api.get(`/chart/dates/${year}?source=${source}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching chart dates:', error);
@@ -23,9 +23,13 @@ export const getChartDates = async (year) => {
 };
 
 // Get chart data for a specific date
-export const getChartData = async (date) => {
+export const getChartData = async (date, source, chartType = null) => {
   try {
-    const response = await api.get(`/chart/data/${date}`);
+    let url = `/chart/data/${date}?source=${source}`;
+    if (chartType) {
+      url += `&chartType=${chartType}`;
+    }
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
     console.error('Error fetching chart data:', error);
@@ -34,13 +38,28 @@ export const getChartData = async (date) => {
 };
 
 // Get yearly top songs
-export const getYearlyTopSongs = async (year) => {
+export const getYearlyTopSongs = async (year, source, chartType = null) => {
   try {
-    const response = await api.get(`/chart/yearly-top/${year}`);
+    let url = `/chart/yearly-top/${year}?source=${source}`;
+    if (chartType) {
+      url += `&chartType=${chartType}`;
+    }
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
     console.error('Error fetching yearly top songs:', error);
     throw new Error(error.response?.data?.message || 'Failed to fetch yearly top songs');
+  }
+};
+
+// Get available Shazam chart types
+export const getShazamChartTypes = async () => {
+  try {
+    const response = await api.get('/chart/shazam/chart-types');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching Shazam chart types:', error);
+    throw new Error(error.response?.data?.message || 'Failed to fetch Shazam chart types');
   }
 };
 

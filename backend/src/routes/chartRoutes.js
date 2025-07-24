@@ -12,4 +12,7 @@ router.get('/data/:date', chartController.getChartData);
 // Get yearly top songs
 router.get('/yearly-top/:year', chartController.getYearlyTopSongs);
 
+// Get available Shazam chart types
+router.get('/shazam/chart-types', chartController.getShazamChartTypes);
+
 module.exports = router; 

@@ -54,20 +54,128 @@ body {
 
 /* Controls section */
 .controls-section {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   margin-bottom: 30px;
   background: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
 }
 
-/* Year selector and view mode */
-.year-selector-container {
+/* Source selector */
+.source-selector {
   display: flex;
   flex-direction: column;
+  gap: 15px;
+}
+
+.source-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.source-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.source-tab:hover {
+  background: #e9ecef;
+}
+
+.source-tab.active {
+  background: #667eea;
+  color: white;
+}
+
+.source-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.source-description {
+  font-size: 12px;
+  opacity: 0.8;
+  text-align: center;
+}
+
+.chart-type-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.chart-type-selector label {
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.chart-type-selector select {
+  padding: 8px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  min-width: 150px;
+}
+
+.chart-type-selector select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Shazam info message */
+.shazam-info {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.info-message {
+  text-align: center;
+  width: 100%;
+}
+
+.info-message strong {
+  color: #1976d2;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.info-message p {
+  color: #424242;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Year selector and view mode */
+.year-selector-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
+  align-items: start;
 }
 
 .year-selector {
@@ -476,8 +584,21 @@ body {
   }
   
   .controls-section {
+    gap: 15px;
+  }
+
+  .source-tabs {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .source-tab {
+    min-width: auto;
+    border-radius: 6px;
+  }
+
+  .year-selector-container {
     grid-template-columns: 1fr;
-    gap: 20px;
   }
   
   .date-grid {
