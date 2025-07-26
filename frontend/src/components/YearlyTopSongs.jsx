@@ -1,7 +1,7 @@
 import React from 'react';
 import JsonViewer from './JsonViewer';
 
-const YearlyTopSongs = ({ data, loading, error, year }) => {
+const YearlyTopSongs = ({ data, loading, error, year, selectedSource, itemCount, onItemCountChange }) => {
   if (loading) {
     return (
       <div className="chart-table">
@@ -75,6 +75,9 @@ const YearlyTopSongs = ({ data, loading, error, year }) => {
         title={`Raw JSON Data for ${year} Yearly Top Songs`}
         filename={`yearly-top-songs-${year}-raw.json`}
         year={year}
+        selectedSource={selectedSource}
+        itemCount={itemCount}
+        onItemCountChange={onItemCountChange}
       />
     </div>
   );

@@ -1,12 +1,26 @@
 import React from 'react';
 
-const YearlyDownloadButton = ({ data, year }) => {
+const YearlyDownloadButton = ({ data, year, selectedSource, itemCount, onItemCountChange }) => {
   const downloadJSON = () => {
     if (!data || data.length === 0) return;
 
+    // Limit data based on item count for Kworb source
+    let dataToDownload = data;
+    if (selectedSource === 'kworb' && itemCount) {
+      dataToDownload = data.slice(0, itemCount);
+    }
+
+    // For Kworb source, renumber positions sequentially to handle missing numbers
+    if (selectedSource === 'kworb') {
+      dataToDownload = dataToDownload.map((item, index) => ({
+        ...item,
+        order: index + 1 // Sequential numbering starting from 1
+      }));
+    }
+
     // Create JSON content for yearly top songs data
     // Filter out calculation properties to keep original download format
-    const songsForDownload = data.map(song => ({
+    const songsForDownload = dataToDownload.map(song => ({
       order: song.order,
       title: song.title,
       artist: song.artist

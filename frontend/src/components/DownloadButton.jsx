@@ -1,8 +1,22 @@
 import React from 'react';
 
-const DownloadButton = ({ data, selectedDate }) => {
+const DownloadButton = ({ data, selectedDate, selectedSource, itemCount, onItemCountChange }) => {
   const downloadJSON = () => {
     if (!data || data.length === 0) return;
+
+    // Limit data based on item count for Kworb source
+    let dataToDownload = data;
+    if (selectedSource === 'kworb' && itemCount) {
+      dataToDownload = data.slice(0, itemCount);
+    }
+
+    // For Kworb source, renumber positions sequentially to handle missing numbers
+    if (selectedSource === 'kworb') {
+      dataToDownload = dataToDownload.map((item, index) => ({
+        ...item,
+        order: index + 1 // Sequential numbering starting from 1
+      }));
+    }
 
     // Format the date for the title
     const formatDate = (dateString) => {
@@ -18,8 +32,8 @@ const DownloadButton = ({ data, selectedDate }) => {
     const jsonData = {
       title: `${formatDate(selectedDate)} - Top Songs`,
       date: selectedDate,
-      totalSongs: data.length,
-      songs: data
+      totalSongs: dataToDownload.length,
+      songs: dataToDownload
     };
 
     const jsonContent = JSON.stringify(jsonData, null, 2);

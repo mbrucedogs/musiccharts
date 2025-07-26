@@ -18,6 +18,7 @@ function App() {
   const [viewMode, setViewMode] = useState('weekly'); // 'weekly' or 'yearly'
   const [selectedSource, setSelectedSource] = useState('musicchartsarchive');
   const [selectedChartType, setSelectedChartType] = useState('top-200');
+  const [itemCount, setItemCount] = useState(50); // Default to 50 items
   
   const { chartTypes: shazamChartTypes, loading: chartTypesLoading } = useShazamChartTypes();
   const { dates, loading: datesLoading, error: datesError } = useChartDates(selectedSource === 'shazam' ? null : selectedYear, selectedSource);
@@ -51,6 +52,10 @@ function App() {
   const handleChartTypeChange = (chartType) => {
     setSelectedChartType(chartType);
     setSelectedDate(null); // Reset selected date when chart type changes
+  };
+
+  const handleItemCountChange = (count) => {
+    setItemCount(count);
   };
 
   return (
@@ -125,10 +130,19 @@ function App() {
                   loading={dataLoading}
                   error={dataError}
                   selectedDate={selectedSource === 'shazam' ? 'Current' : selectedDate}
+                  selectedSource={selectedSource}
+                  itemCount={itemCount}
+                  onItemCountChange={handleItemCountChange}
                 />
                 
                 {chartData && chartData.length > 0 && (
-                  <DownloadButton data={chartData} selectedDate={selectedSource === 'shazam' ? 'Current' : selectedDate} />
+                  <DownloadButton 
+                    data={chartData} 
+                    selectedDate={selectedSource === 'shazam' ? 'Current' : selectedDate}
+                    selectedSource={selectedSource}
+                    itemCount={itemCount}
+                    onItemCountChange={handleItemCountChange}
+                  />
                 )}
               </>
             ) : (
@@ -138,10 +152,19 @@ function App() {
                   loading={yearlyLoading}
                   error={yearlyError}
                   year={selectedSource === 'shazam' ? 'Current' : selectedYear}
+                  selectedSource={selectedSource}
+                  itemCount={itemCount}
+                  onItemCountChange={handleItemCountChange}
                 />
                 
                 {yearlySongs && yearlySongs.length > 0 && (
-                  <YearlyDownloadButton data={yearlySongs} year={selectedSource === 'shazam' ? 'Current' : selectedYear} />
+                  <YearlyDownloadButton 
+                    data={yearlySongs} 
+                    year={selectedSource === 'shazam' ? 'Current' : selectedYear}
+                    selectedSource={selectedSource}
+                    itemCount={itemCount}
+                    onItemCountChange={handleItemCountChange}
+                  />
                 )}
               </>
             )}

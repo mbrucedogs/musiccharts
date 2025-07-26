@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import ItemCountSelector from './ItemCountSelector';
 
-const JsonViewer = ({ data, title, filename, year }) => {
+const JsonViewer = ({ data, title, filename, year, selectedSource, itemCount, onItemCountChange }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [customTitle, setCustomTitle] = useState(title || `${year} - Top 50 Songs`);
   const [selectedProperties, setSelectedProperties] = useState({
     position: true,
     title: true,
@@ -15,12 +17,23 @@ const JsonViewer = ({ data, title, filename, year }) => {
   const formatData = () => {
     if (!data || data.length === 0) return null;
 
-    const filteredSongs = data.map(item => {
+    // Limit data based on item count for Kworb source
+    let dataToProcess = data;
+    if (selectedSource === 'kworb' && itemCount) {
+      dataToProcess = data.slice(0, itemCount);
+    }
+
+    const filteredSongs = dataToProcess.map((item, index) => {
       const filteredSong = {};
       
       // Map order to position to match the expected format
       if (selectedProperties.position && item.hasOwnProperty('order')) {
-        filteredSong.position = item.order;
+        // For Kworb source, renumber positions sequentially to handle missing numbers
+        if (selectedSource === 'kworb') {
+          filteredSong.position = index + 1; // Sequential numbering starting from 1
+        } else {
+          filteredSong.position = item.order; // Keep original order for other sources
+        }
       }
       
       // Add other selected properties
@@ -34,7 +47,7 @@ const JsonViewer = ({ data, title, filename, year }) => {
     });
 
     return {
-      title: `${year} - Top 50 Songs`,
+      title: customTitle,
       songs: filteredSongs
     };
   };
@@ -73,8 +86,46 @@ const JsonViewer = ({ data, title, filename, year }) => {
     document.body.removeChild(link);
   };
 
+  const updateTitle = () => {
+    // This function can be used to update the title if needed
+    // For now, the title updates automatically as the user types
+  };
+
   return (
     <div className="json-viewer">
+      {/* Form Section with Title Input and Item Count Selector */}
+      <div className="json-form-section">
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="json-title">JSON Title:</label>
+            <input
+              id="json-title"
+              type="text"
+              value={customTitle}
+              onChange={(e) => setCustomTitle(e.target.value)}
+              className="title-input"
+              placeholder="Enter custom title for JSON"
+            />
+          </div>
+          
+          {/* Item Count Selector - only for Kworb */}
+          <ItemCountSelector 
+            itemCount={itemCount}
+            onItemCountChange={onItemCountChange}
+            selectedSource={selectedSource}
+          />
+        </div>
+        
+        <div className="form-actions">
+          <button 
+            onClick={updateTitle}
+            className="update-btn"
+          >
+            Update Title
+          </button>
+        </div>
+      </div>
+      
       <button 
         onClick={() => setIsVisible(!isVisible)}
         className="json-toggle-btn"
@@ -85,7 +136,7 @@ const JsonViewer = ({ data, title, filename, year }) => {
       {isVisible && (
         <div className="json-container">
           <div className="json-header">
-            <h4>{title}</h4>
+            <h4>{customTitle}</h4>
             <div className="json-actions">
               <button onClick={copyToClipboard} className="copy-btn">
                 Copy JSON

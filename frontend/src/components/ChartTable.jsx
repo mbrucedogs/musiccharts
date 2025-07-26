@@ -1,6 +1,7 @@
 import React from 'react';
+import JsonViewer from './JsonViewer';
 
-const ChartTable = ({ data, loading, error, selectedDate }) => {
+const ChartTable = ({ data, loading, error, selectedDate, selectedSource, itemCount, onItemCountChange }) => {
   if (loading) {
     return (
       <div className="chart-table">
@@ -56,6 +57,17 @@ const ChartTable = ({ data, loading, error, selectedDate }) => {
           </tbody>
         </table>
       </div>
+      
+      {/* JSON Viewer for debugging and data inspection */}
+      <JsonViewer 
+        data={data}
+        title={`Raw JSON Data for ${selectedDate || 'Current'} Chart`}
+        filename={`chart-data-${selectedDate || 'current'}-raw.json`}
+        selectedDate={selectedDate}
+        selectedSource={selectedSource}
+        itemCount={itemCount}
+        onItemCountChange={onItemCountChange}
+      />
     </div>
   );
 };
